@@ -5,94 +5,77 @@
 <title>BAINT AIOPs Car Demo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f0f2f5;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-.device {
-  width: 420px;
-  background: #fff;
-  border-radius: 20px;
-  padding: 16px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-}
-h2 { text-align: center; }
-.component {
-  display: flex;
-  justify-content: space-between;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 10px;
-  background: #e5e7eb;
-  cursor: pointer;
-}
-.component:hover { background: #d1d5db; }
-.fault {
-  color: red;
-  font-weight: bold;
-}
-.ai-suggestion {
-  background: #111827;
-  color: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  margin-top: 10px;
-  font-size: 13px;
-  opacity: 0.95;
-}
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #f0f2f5;
+  }
+  .car-container {
+    position: relative;
+    width: 600px;
+    height: 300px;
+    background: url('https://i.ibb.co/3fzxLmn/car-side.png') no-repeat center;
+    background-size: contain;
+  }
+  .hotspot {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    background: rgba(255,0,0,0.6);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+  }
+  .ai-panel {
+    margin-top: 20px;
+    width: 600px;
+    background: #111827;
+    color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
 </style>
 </head>
 <body>
-<div class="device">
-  <h2>BAINT AIOPs Car Demo</h2>
-  
-  <div id="components">
-    <!-- Components will be loaded here -->
-  </div>
 
-  <div id="aiSuggestion" class="ai-suggestion">
-    AI Suggestions will appear here...
-  </div>
+<div class="car-container">
+  <div class="hotspot" style="top: 30px; left: 100px;" data-part="Engine" data-serial="ENG12345" data-fault="Oil leak detected">E</div>
+  <div class="hotspot" style="top: 150px; left: 50px;" data-part="Battery" data-serial="BAT67890" data-fault="Low voltage">B</div>
+  <div class="hotspot" style="top: 220px; left: 300px;" data-part="Brakes" data-serial="BRK24680" data-fault="Brake pad wear">BR</div>
+</div>
+
+<div class="ai-panel" id="aiPanel">
+  Click a component to see fault & suggested fix.
 </div>
 
 <script>
-// Mock car components and fault data
-const carComponents = [
-  { name: "Engine", serial: "ENG-001", status: "OK" },
-  { name: "Battery", serial: "BAT-123", status: "Low Charge" },
-  { name: "Brakes", serial: "BRK-456", status: "Wear Detected" },
-];
+const hotspots = document.querySelectorAll('.hotspot');
+const panel = document.getElementById('aiPanel');
 
-// AI logic
-function aiInspect(component) {
-  switch(component.status) {
-    case "OK":
-      return `${component.name} is functioning normally.`;
-    case "Low Charge":
-      return `⚠ ${component.name} battery is low. Suggest charging or replacement.`;
-    case "Wear Detected":
-      return `⚠ ${component.name} shows wear. Inspect and replace if needed.`;
-    default:
-      return `${component.name} status unknown.`;
-  }
-}
-
-// Load components to UI
-const componentsDiv = document.getElementById("components");
-carComponents.forEach(comp => {
-  const div = document.createElement("div");
-  div.className = "component";
-  div.innerHTML = `<span>${comp.name}</span><span>QR: ${comp.serial}</span>`;
-  div.onclick = () => {
-    document.getElementById("aiSuggestion").innerText = aiInspect(comp);
-  };
-  componentsDiv.appendChild(div);
+hotspots.forEach(h => {
+  h.addEventListener('click', () => {
+    const part = h.getAttribute('data-part');
+    const serial = h.getAttribute('data-serial');
+    const fault = h.getAttribute('data-fault');
+    
+    panel.innerHTML = `
+      <strong>Component:</strong> ${part} <br>
+      <strong>Serial / QR:</strong> ${serial} <br>
+      <strong>Detected Fault:</strong> ${fault} <br>
+      <strong>BAINT AIOPs Suggestion:</strong> Please check ${part} and follow maintenance steps.
+    `;
+  });
 });
 </script>
+
 </body>
 </html>
