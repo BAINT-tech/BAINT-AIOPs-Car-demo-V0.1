@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BAINT AIOPs Car Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.device {
+  width: 420px;
+  background: #fff;
+  border-radius: 20px;
+  padding: 16px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+h2 { text-align: center; }
+.component {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  cursor: pointer;
+}
+.component:hover { background: #d1d5db; }
+.fault {
+  color: red;
+  font-weight: bold;
+}
+.ai-suggestion {
+  background: #111827;
+  color: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  font-size: 13px;
+  opacity: 0.95;
+}
+</style>
+</head>
+<body>
+<div class="device">
+  <h2>BAINT AIOPs Car Demo</h2>
+  
+  <div id="components">
+    <!-- Components will be loaded here -->
+  </div>
+
+  <div id="aiSuggestion" class="ai-suggestion">
+    AI Suggestions will appear here...
+  </div>
+</div>
+
+<script>
+// Mock car components and fault data
+const carComponents = [
+  { name: "Engine", serial: "ENG-001", status: "OK" },
+  { name: "Battery", serial: "BAT-123", status: "Low Charge" },
+  { name: "Brakes", serial: "BRK-456", status: "Wear Detected" },
+];
+
+// AI logic
+function aiInspect(component) {
+  switch(component.status) {
+    case "OK":
+      return `${component.name} is functioning normally.`;
+    case "Low Charge":
+      return `⚠ ${component.name} battery is low. Suggest charging or replacement.`;
+    case "Wear Detected":
+      return `⚠ ${component.name} shows wear. Inspect and replace if needed.`;
+    default:
+      return `${component.name} status unknown.`;
+  }
+}
+
+// Load components to UI
+const componentsDiv = document.getElementById("components");
+carComponents.forEach(comp => {
+  const div = document.createElement("div");
+  div.className = "component";
+  div.innerHTML = `<span>${comp.name}</span><span>QR: ${comp.serial}</span>`;
+  div.onclick = () => {
+    document.getElementById("aiSuggestion").innerText = aiInspect(comp);
+  };
+  componentsDiv.appendChild(div);
+});
+</script>
+</body>
+</html>
