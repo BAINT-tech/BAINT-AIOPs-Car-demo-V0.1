@@ -12,16 +12,20 @@
     flex-direction: column;
     align-items: center;
     background: #f0f2f5;
-    height: 100vh;
+    min-height: 100vh;
     justify-content: center;
+    padding: 10px;
   }
+
   .car-container {
     position: relative;
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     height: 300px;
     background: url('https://i.ibb.co/3fzxLmn/car-side.png') no-repeat center;
     background-size: contain;
   }
+
   .hotspot {
     position: absolute;
     width: 50px;
@@ -36,9 +40,11 @@
     font-weight: bold;
     transition: transform 0.2s;
   }
+
   .hotspot:hover {
     transform: scale(1.2);
   }
+
   .logo {
     width: 30px;
     height: 30px;
@@ -46,6 +52,7 @@
     background: url('https://i.ibb.co/5RnHb7x/baint-logo.png') no-repeat center;
     background-size: cover;
   }
+
   .steam {
     position: absolute;
     width: 60px;
@@ -57,36 +64,50 @@
     animation: steam-rise 1s infinite;
     display: none;
   }
+
   @keyframes steam-rise {
     0% { transform: translateY(0) scale(0.5); opacity: 0.6; }
     50% { transform: translateY(-30px) scale(0.7); opacity: 0.4; }
     100% { transform: translateY(-60px) scale(0.9); opacity: 0; }
   }
+
   .ai-panel {
     margin-top: 20px;
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     background: #111827;
     color: #fff;
     padding: 15px;
     border-radius: 10px;
     font-size: 14px;
   }
+
+  @media (max-width: 480px) {
+    .car-container { height: 200px; }
+    .hotspot { width: 40px; height: 40px; }
+    .logo { width: 24px; height: 24px; }
+    .ai-panel { font-size: 13px; }
+  }
 </style>
 </head>
 <body>
 
 <div class="car-container">
-  <!-- Engine Hotspot -->
+  <!-- Engine -->
   <div class="hotspot" style="top: 30px; left: 100px;" data-part="Engine" data-serial="ENG12345" data-fault="Oil leak detected">
     <div class="logo"></div>
     <div class="steam"></div>
   </div>
-  <!-- Battery Hotspot -->
+  <!-- Battery -->
   <div class="hotspot" style="top: 150px; left: 50px;" data-part="Battery" data-serial="BAT67890" data-fault="Low voltage">
     <div class="logo"></div>
   </div>
-  <!-- Brakes Hotspot -->
+  <!-- Brakes -->
   <div class="hotspot" style="top: 220px; left: 300px;" data-part="Brakes" data-serial="BRK24680" data-fault="Brake pad wear">
+    <div class="logo"></div>
+  </div>
+  <!-- Tires -->
+  <div class="hotspot" style="top: 250px; left: 500px;" data-part="Tires" data-serial="TIR11223" data-fault="Pressure low">
     <div class="logo"></div>
   </div>
 </div>
@@ -95,7 +116,7 @@
   Click a component to see fault & suggested fix.
 </div>
 
-<!-- Audio for engine start -->
+<!-- Audio -->
 <audio id="engineSound" src="https://www.soundjay.com/transportation/car-start-1.mp3"></audio>
 
 <script>
@@ -117,7 +138,7 @@ hotspots.forEach(h => {
       <strong>BAINT AIOPs Suggestion:</strong> Please check ${part} and follow maintenance steps.
     `;
     
-    // If engine hotspot, show steam and play sound
+    // Engine steam & sound
     if(part === "Engine") {
       steam.style.display = 'block';
       engineSound.currentTime = 0;
