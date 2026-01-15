@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BAINT AIOPs Car Demo</title>
+<title>BAINT AIOPs Car Demo with QR Scan</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
   body {
@@ -82,11 +82,23 @@
     font-size: 14px;
   }
 
+  .scan-button {
+    margin-top: 15px;
+    padding: 10px 15px;
+    font-size: 14px;
+    border: none;
+    background: #2563eb;
+    color: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
   @media (max-width: 480px) {
     .car-container { height: 200px; }
     .hotspot { width: 40px; height: 40px; }
     .logo { width: 24px; height: 24px; }
     .ai-panel { font-size: 13px; }
+    .scan-button { font-size: 13px; }
   }
 </style>
 </head>
@@ -113,8 +125,10 @@
 </div>
 
 <div class="ai-panel" id="aiPanel">
-  Click a component to see fault & suggested fix.
+  Click "Scan QR" to simulate scanning a component QR code.
 </div>
+
+<button class="scan-button" id="scanBtn">Scan QR</button>
 
 <!-- Audio -->
 <audio id="engineSound" src="https://www.soundjay.com/transportation/car-start-1.mp3"></audio>
@@ -122,30 +136,40 @@
 <script>
 const hotspots = document.querySelectorAll('.hotspot');
 const panel = document.getElementById('aiPanel');
+const scanBtn = document.getElementById('scanBtn');
 const engineSound = document.getElementById('engineSound');
 
 hotspots.forEach(h => {
-  h.addEventListener('click', () => {
-    const part = h.getAttribute('data-part');
-    const serial = h.getAttribute('data-serial');
-    const fault = h.getAttribute('data-fault');
-    const steam = h.querySelector('.steam');
-    
-    panel.innerHTML = `
-      <strong>Component:</strong> ${part} <br>
-      <strong>Serial / QR:</strong> ${serial} <br>
-      <strong>Detected Fault:</strong> ${fault} <br>
-      <strong>BAINT AIOPs Suggestion:</strong> Please check ${part} and follow maintenance steps.
-    `;
-    
-    // Engine steam & sound
-    if(part === "Engine") {
-      steam.style.display = 'block';
-      engineSound.currentTime = 0;
-      engineSound.play();
-      setTimeout(() => steam.style.display = 'none', 2000);
-    }
-  });
+  h.addEventListener('click', () => showFault(h));
+});
+
+// Function to show component info
+function showFault(h) {
+  const part = h.getAttribute('data-part');
+  const serial = h.getAttribute('data-serial');
+  const fault = h.getAttribute('data-fault');
+  const steam = h.querySelector('.steam');
+  
+  panel.innerHTML = `
+    <strong>Component:</strong> ${part} <br>
+    <strong>Serial / QR:</strong> ${serial} <br>
+    <strong>Detected Fault:</strong> ${fault} <br>
+    <strong>BAINT AIOPs Suggestion:</strong> Check ${part} and follow maintenance steps.
+  `;
+  
+  if(part === "Engine") {
+    steam.style.display = 'block';
+    engineSound.currentTime = 0;
+    engineSound.play();
+    setTimeout(() => steam.style.display = 'none', 2000);
+  }
+}
+
+// Simulate QR scanning
+scanBtn.addEventListener('click', () => {
+  const randomHotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
+  showFault(randomHotspot);
+  panel.innerHTML += `<br><em>QR scan simulated ✅</em>`;
 });
 </script>
 
