@@ -2,174 +2,134 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>BAINT AIOPs Car Demo with QR Scan</title>
+<title>BAINT AIOPs Car Demo</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-  body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #f0f2f5;
-    min-height: 100vh;
-    justify-content: center;
-    padding: 10px;
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f2f2f2;
+}
 
-  .car-container {
-    position: relative;
-    width: 100%;
-    max-width: 600px;
-    height: 300px;
-    background: url('https://i.ibb.co/3fzxLmn/car-side.png') no-repeat center;
-    background-size: contain;
-  }
+.car-container {
+  position: relative;
+  width: 600px;
+  max-width: 90%;
+  height: 300px;
+  background: url('https://i.ibb.co/3fzxLmn/car-side.png') no-repeat center;
+  background-size: contain;
+  border: 2px solid #333;
+  border-radius: 12px;
+  overflow: hidden;
+}
 
-  .hotspot {
-    position: absolute;
-    width: 50px;
-    height: 50px;
-    background: rgba(0,0,0,0.6);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-weight: bold;
-    transition: transform 0.2s;
-  }
+/* Watermark logo behind car */
+.car-container::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 120px;
+  height: 120px;
+  background: url('YOUR-BAINT-LOGO.png') no-repeat center;
+  background-size: contain;
+  opacity: 0.15; /* faint watermark */
+  pointer-events: none;
+}
 
-  .hotspot:hover {
-    transform: scale(1.2);
-  }
+/* Hotspot logos */
+.logo {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: url('YOUR-BAINT-LOGO.png') no-repeat center;
+  background-size: cover;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.logo:hover {
+  transform: scale(1.2);
+}
 
-  .logo {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: url('https://i.ibb.co/5RnHb7x/baint-logo.png') no-repeat center;
-    background-size: cover;
-  }
+/* Example hotspots */
+#engine { top: 100px; left: 150px; }
+#battery { top: 120px; left: 300px; }
+#tires { top: 200px; left: 80px; }
 
-  .steam {
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    top: -40px;
-    left: -5px;
-    background: rgba(255,255,255,0.6);
-    border-radius: 50%;
-    animation: steam-rise 1s infinite;
-    display: none;
-  }
+/* Footer */
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
 
-  @keyframes steam-rise {
-    0% { transform: translateY(0) scale(0.5); opacity: 0.6; }
-    50% { transform: translateY(-30px) scale(0.7); opacity: 0.4; }
-    100% { transform: translateY(-60px) scale(0.9); opacity: 0; }
-  }
+/* Engine start animation */
+.steam {
+  position: absolute;
+  width: 20px;
+  height: 50px;
+  top: 50px;
+  left: 160px;
+  background: radial-gradient(circle, rgba(200,200,200,0.7) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  animation: steam 1s infinite;
+}
 
-  .ai-panel {
-    margin-top: 20px;
-    width: 100%;
-    max-width: 600px;
-    background: #111827;
-    color: #fff;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 14px;
-  }
-
-  .scan-button {
-    margin-top: 15px;
-    padding: 10px 15px;
-    font-size: 14px;
-    border: none;
-    background: #2563eb;
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-  }
-
-  @media (max-width: 480px) {
-    .car-container { height: 200px; }
-    .hotspot { width: 40px; height: 40px; }
-    .logo { width: 24px; height: 24px; }
-    .ai-panel { font-size: 13px; }
-    .scan-button { font-size: 13px; }
-  }
+@keyframes steam {
+  0% { transform: translateY(0px); opacity: 0.6; }
+  50% { transform: translateY(-20px); opacity: 0.3; }
+  100% { transform: translateY(-40px); opacity: 0; }
+}
 </style>
 </head>
 <body>
 
 <div class="car-container">
-  <!-- Engine -->
-  <div class="hotspot" style="top: 30px; left: 100px;" data-part="Engine" data-serial="ENG12345" data-fault="Oil leak detected">
-    <div class="logo"></div>
-    <div class="steam"></div>
-  </div>
-  <!-- Battery -->
-  <div class="hotspot" style="top: 150px; left: 50px;" data-part="Battery" data-serial="BAT67890" data-fault="Low voltage">
-    <div class="logo"></div>
-  </div>
-  <!-- Brakes -->
-  <div class="hotspot" style="top: 220px; left: 300px;" data-part="Brakes" data-serial="BRK24680" data-fault="Brake pad wear">
-    <div class="logo"></div>
-  </div>
-  <!-- Tires -->
-  <div class="hotspot" style="top: 250px; left: 500px;" data-part="Tires" data-serial="TIR11223" data-fault="Pressure low">
-    <div class="logo"></div>
-  </div>
+  <!-- Hotspots -->
+  <div class="logo" id="engine" title="Engine"></div>
+  <div class="logo" id="battery" title="Battery"></div>
+  <div class="logo" id="tires" title="Tires"></div>
+
+  <!-- Steam effect -->
+  <div class="steam" id="steam"></div>
 </div>
 
-<div class="ai-panel" id="aiPanel">
-  Click "Scan QR" to simulate scanning a component QR code.
+<div class="footer">
+  BAINT AIOPs Car Demo • Click logos to see components
 </div>
-
-<button class="scan-button" id="scanBtn">Scan QR</button>
 
 <!-- Audio -->
-<audio id="engineSound" src="https://www.soundjay.com/transportation/car-start-1.mp3"></audio>
+<audio id="startSound" src="https://www.soundjay.com/transportation/car-start-01.mp3"></audio>
 
 <script>
-const hotspots = document.querySelectorAll('.hotspot');
-const panel = document.getElementById('aiPanel');
-const scanBtn = document.getElementById('scanBtn');
-const engineSound = document.getElementById('engineSound');
+const engine = document.getElementById('engine');
+const steam = document.getElementById('steam');
+const startSound = document.getElementById('startSound');
 
-hotspots.forEach(h => {
-  h.addEventListener('click', () => showFault(h));
+engine.addEventListener('click', () => {
+  // play engine start sound
+  startSound.play();
+  // show steam briefly
+  steam.style.opacity = '1';
+  setTimeout(() => {
+    steam.style.opacity = '0';
+  }, 1500);
+  alert("Engine hot spot clicked! BAINT AI can detect faults here by QR scan.");
 });
 
-// Function to show component info
-function showFault(h) {
-  const part = h.getAttribute('data-part');
-  const serial = h.getAttribute('data-serial');
-  const fault = h.getAttribute('data-fault');
-  const steam = h.querySelector('.steam');
-  
-  panel.innerHTML = `
-    <strong>Component:</strong> ${part} <br>
-    <strong>Serial / QR:</strong> ${serial} <br>
-    <strong>Detected Fault:</strong> ${fault} <br>
-    <strong>BAINT AIOPs Suggestion:</strong> Check ${part} and follow maintenance steps.
-  `;
-  
-  if(part === "Engine") {
-    steam.style.display = 'block';
-    engineSound.currentTime = 0;
-    engineSound.play();
-    setTimeout(() => steam.style.display = 'none', 2000);
-  }
-}
+// Other hotspots
+document.getElementById('battery').addEventListener('click', () => {
+  alert("Battery hotspot clicked! BAINT AI can guide the engineer.");
+});
 
-// Simulate QR scanning
-scanBtn.addEventListener('click', () => {
-  const randomHotspot = hotspots[Math.floor(Math.random() * hotspots.length)];
-  showFault(randomHotspot);
-  panel.innerHTML += `<br><em>QR scan simulated ✅</em>`;
+document.getElementById('tires').addEventListener('click', () => {
+  alert("Tires hotspot clicked! BAINT AI can check tire health with QR scan.");
 });
 </script>
 
